@@ -11,6 +11,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/uswah-uswatunhahaha/building-microservices/product-api/db"
 	"github.com/uswah-uswatunhahaha/building-microservices/product-api/handlers"
+	"google.golang.org/grpc"
+
+	protos "github.com/uswah-uswatunhahaha/building-microservices/currency/protos/currency"
 )
 
 func main() {
@@ -21,8 +24,17 @@ func main() {
 		l.Fatalf("Database connection failed: %s", err.Error())
 	}
 
+	conn, err := grpc.Dial("localhost:9092")
+	if err != nil {
+		panic(err)
+	}
+	defer conn.Close()
+
+	// Create client
+	cc := protos.NewCurrencyClient(conn)
+
 	//create the handlers
-	ph := handlers.NewProducts(l, database)
+	ph := handlers.NewProducts(l, database, cc)
 
 	// create a new serve mux and register the handlers
 	sm := mux.NewRouter()

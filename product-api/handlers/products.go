@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	protos "github.com/uswah-uswatunhahaha/building-microservices/currency/protos/currency"
 	"github.com/uswah-uswatunhahaha/building-microservices/product-api/data"
 )
 
@@ -18,11 +19,12 @@ type KeyProduct struct{}
 type Products struct {
 	l        *log.Logger
 	database *sql.DB
+	cc       protos.CurrencyClient
 }
 
 // NewProducts is a constructor
-func NewProducts(l *log.Logger, database *sql.DB) *Products {
-	return &Products{l, database}
+func NewProducts(l *log.Logger, database *sql.DB, cc protos.CurrencyClient) *Products {
+	return &Products{l, database, cc}
 }
 
 // GenericError is a generic error message returned by a server
