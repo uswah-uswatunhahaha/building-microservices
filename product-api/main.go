@@ -24,7 +24,7 @@ func main() {
 		l.Fatalf("Database connection failed: %s", err.Error())
 	}
 
-	conn, err := grpc.Dial("localhost:9092")
+	conn, err := grpc.Dial("localhost:9092", grpc.WithInsecure())
 	if err != nil {
 		panic(err)
 	}

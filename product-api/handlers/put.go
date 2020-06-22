@@ -50,7 +50,7 @@ func (p *Products) Edit(rw http.ResponseWriter, r *http.Request) {
 
 // Update is a method to update record at database
 func (p *Products) Update(ctx context.Context, prod data.Product, id int) error {
-	queryText := fmt.Sprintf("UPDATE tbl_product SET name = '%s', description ='%s', price = %d, sku = '%s' where id = %d",
+	queryText := fmt.Sprintf("UPDATE tbl_product SET name = '%s', description ='%s', price = %f, sku = '%s' where id = %d",
 		prod.Name,
 		prod.Description,
 		prod.Price,
