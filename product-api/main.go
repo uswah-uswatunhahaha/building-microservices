@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/hashicorp/go-hclog"
+	"github.com/uswah-uswatunhahaha/building-microservices/product-api/data"
 	"github.com/uswah-uswatunhahaha/building-microservices/product-api/db"
 	"github.com/uswah-uswatunhahaha/building-microservices/product-api/handlers"
 	"google.golang.org/grpc"
@@ -17,11 +19,13 @@ import (
 )
 
 func main() {
-	l := log.New(os.Stdout, "Mysql - Go", log.LstdFlags)
+	// l := log.New(os.Stdout, "Mysql - Go", log.LstdFlags)
+	l := hclog.Default()
+	l.Info("Running Product-Api main")
 	database, err := db.CreateDatabase()
 
 	if err != nil {
-		l.Fatalf("Database connection failed: %s", err.Error())
+		l.Error("Database connection failed: %s", err.Error())
 	}
 
 	conn, err := grpc.Dial("localhost:9092", grpc.WithInsecure())
@@ -33,8 +37,12 @@ func main() {
 	// Create client
 	cc := protos.NewCurrencyClient(conn)
 
+	// create database instance
+	db := data.NewProductsDB(database, cc, l)
+	// data.NewProductsDB(cc, l)
+
 	//create the handlers
-	ph := handlers.NewProducts(l, database, cc)
+	ph := handlers.NewProducts(l, db)
 
 	// create a new serve mux and register the handlers
 	sm := mux.NewRouter()
@@ -57,20 +65,20 @@ func main() {
 
 	// create a new server
 	s := &http.Server{
-		Addr:         ":9090",           // configure the address
-		Handler:      sm,                //set the default handler
-		ErrorLog:     l,                 // set the logger for the server
-		ReadTimeout:  5 * time.Second,   // max time to read request from the client
-		WriteTimeout: 10 * time.Second,  //max time ro write response to the client
-		IdleTimeout:  120 * time.Second, //max time for connections using TCP Keep=Alive
+		Addr:         ":9090",                                          // configure the address
+		Handler:      sm,                                               //set the default handler
+		ErrorLog:     l.StandardLogger(&hclog.StandardLoggerOptions{}), // set the logger for the server
+		ReadTimeout:  5 * time.Second,                                  // max time to read request from the client
+		WriteTimeout: 10 * time.Second,                                 //max time ro write response to the client
+		IdleTimeout:  120 * time.Second,                                //max time for connections using TCP Keep=Alive
 	}
 
 	// start the server
 	go func() {
-		l.Println("Starting server on port 9090")
+		l.Info("Starting server on port 9090")
 		err := s.ListenAndServe()
 		if err != nil {
-			l.Printf("Error starting server: %s\n", err)
+			l.Error("Error starting server: %s\n", err)
 			os.Exit(1)
 		}
 	}()

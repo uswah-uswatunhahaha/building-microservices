@@ -1,14 +1,11 @@
 package handlers
 
 import (
-	"database/sql"
-	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
-	protos "github.com/uswah-uswatunhahaha/building-microservices/currency/protos/currency"
+	"github.com/hashicorp/go-hclog"
 	"github.com/uswah-uswatunhahaha/building-microservices/product-api/data"
 )
 
@@ -17,14 +14,13 @@ type KeyProduct struct{}
 
 // Products is a struct
 type Products struct {
-	l        *log.Logger
-	database *sql.DB
-	cc       protos.CurrencyClient
+	l         hclog.Logger
+	productDB *data.ProductsDB
 }
 
 // NewProducts is a constructor
-func NewProducts(l *log.Logger, database *sql.DB, cc protos.CurrencyClient) *Products {
-	return &Products{l, database, cc}
+func NewProducts(l hclog.Logger, pdb *data.ProductsDB) *Products {
+	return &Products{l, pdb}
 }
 
 // GenericError is a generic error message returned by a server
@@ -46,19 +42,19 @@ func getProductID(r *http.Request) int {
 	return id
 }
 
-// ErrProductNotFound is a var
-var ErrProductNotFound = fmt.Errorf("Product not found")
+// // ErrProductNotFound is a var
+// var ErrProductNotFound = fmt.Errorf("Product not found")
 
-func (p *Products) findProductID(id int) int {
-	prod := &data.Product{}
-	p.database.QueryRow("SELECT EXISTS(SELECT * FROM tbl_product WHERE id=?)", id).Scan(&prod.ID)
+// func (p *Products) findProductID(id int) int {
+// 	prod := &data.Product{}
+// 	p.database.QueryRow("SELECT EXISTS(SELECT * FROM tbl_product WHERE id=?)", id).Scan(&prod.ID)
 
-	if prod.ID == 0 {
-		log.Println("ID Not Found")
-		return prod.ID
-	}
+// 	if prod.ID == 0 {
+// 		log.Println("ID Not Found")
+// 		return prod.ID
+// 	}
 
-	log.Printf("Found the ID %d", id)
+// 	log.Printf("Found the ID %d", id)
 
-	return prod.ID
-}
+// 	return prod.ID
+// }
