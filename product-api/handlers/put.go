@@ -13,7 +13,6 @@ import (
 // responses:
 //	201: noContentResponse
 //  404: errorResponse
-//  422: errorValidation
 
 // Edit handles PUT request
 func (p *Products) Edit(rw http.ResponseWriter, r *http.Request) {

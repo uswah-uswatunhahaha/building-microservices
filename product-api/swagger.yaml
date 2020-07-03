@@ -1,6 +1,37 @@
 basePath: /
 consumes:
 - application/json
+definitions:
+  GenericError:
+    description: GenericError is a generic error message returned by a server
+    properties:
+      message:
+        type: string
+        x-go-name: Message
+    type: object
+    x-go-package: github.com/uswah-uswatunhahaha/building-microservices/product-api/handlers
+  Product:
+    description: Product is entities of database fields
+    properties:
+      description:
+        type: string
+        x-go-name: Description
+      id:
+        format: int64
+        type: integer
+        x-go-name: ID
+      name:
+        type: string
+        x-go-name: Name
+      price:
+        format: double
+        type: number
+        x-go-name: Price
+      sku:
+        type: string
+        x-go-name: SKU
+    type: object
+    x-go-package: github.com/uswah-uswatunhahaha/building-microservices/product-api/data
 info:
   description: Documentation for Product API
   title: of Product API
@@ -18,11 +49,18 @@ paths:
     post:
       description: Create a new product
       operationId: createProduct
+      parameters:
+      - description: |-
+          Product data structure to Update or Create.
+          Note: the id field is ignored by update and create operations
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Product'
       responses:
         "200":
           $ref: '#/responses/productResponse'
-        "422":
-          $ref: '#/responses/errorValidation'
         "501":
           $ref: '#/responses/errorResponse'
       tags:
@@ -30,19 +68,41 @@ paths:
     put:
       description: Update a products details
       operationId: updateProduct
+      parameters:
+      - description: |-
+          Product data structure to Update or Create.
+          Note: the id field is ignored by update and create operations
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/Product'
+      - description: The id of product for which the operation relates
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
       responses:
         "201":
           $ref: '#/responses/noContentResponse'
         "404":
           $ref: '#/responses/errorResponse'
-        "422":
-          $ref: '#/responses/errorValidation'
       tags:
       - products
   /products/{id}:
     delete:
       description: Update a products details
       operationId: deleteProduct
+      parameters:
+      - description: The id of product for which the operation relates
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
       responses:
         "201":
           $ref: '#/responses/noContentResponse'
@@ -64,6 +124,23 @@ paths:
       - products
 produces:
 - application/json
+responses:
+  errorResponse:
+    description: Generic error message returned as a string
+    schema:
+      $ref: '#/definitions/GenericError'
+  noContentResponse:
+    description: No content is returned by this API endpoint
+  productResponse:
+    description: Data structure representing a single product
+    schema:
+      $ref: '#/definitions/Product'
+  productsResponse:
+    description: A list of products
+    schema:
+      items:
+        $ref: '#/definitions/Product'
+      type: array
 schemes:
 - http
 swagger: "2.0"
