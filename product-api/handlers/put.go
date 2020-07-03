@@ -45,28 +45,3 @@ func (p *Products) Edit(rw http.ResponseWriter, r *http.Request) {
 	}
 
 }
-
-// // Update is a method to update record at database
-// func (p *Products) Update(ctx context.Context, prod data.Product, id int) error {
-// 	queryText := fmt.Sprintf("UPDATE tbl_product SET name = '%s', description ='%s', price = %f, sku = '%s' where id = %d",
-// 		prod.Name,
-// 		prod.Description,
-// 		prod.Price,
-// 		prod.SKU,
-// 		id)
-
-// 	fmt.Println(queryText)
-
-// 	// Check ID existance before exec update
-// 	isIDExist := p.findProductID(id)
-// 	if isIDExist == 0 {
-// 		return ErrProductNotFound
-// 	}
-
-// 	_, err := p.database.ExecContext(ctx, queryText)
-
-// 	if err != nil {
-// 		return err
-// 	}
-// 	return nil
-// }

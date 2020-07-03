@@ -25,11 +25,6 @@ type Product struct {
 // Products is a collection of Product
 type Products []Product
 
-// // NewProduct is a constructor
-// func NewProduct() *Product {
-// 	return &Product{}
-// }
-
 // ProductsDB is a type of Products and call protos
 type ProductsDB struct {
 	database *sql.DB
@@ -43,7 +38,8 @@ func NewProductsDB(db *sql.DB, c protos.CurrencyClient, l hclog.Logger) *Product
 }
 
 // GetProducts return all products from the database (data pkg)
-func (pdb *ProductsDB) GetProducts() (*Products, error) {
+func (pdb *ProductsDB) GetProducts(currency string) (*Products, error) {
+
 	var prods Products
 	rows, err := pdb.database.Query("SELECT * FROM `tbl_product`")
 
@@ -63,11 +59,28 @@ func (pdb *ProductsDB) GetProducts() (*Products, error) {
 		prods = append(prods, *prod)
 	}
 
+	if currency == "" {
+		return &prods, nil
+	}
+
+	rate, err := pdb.getRate(currency)
+	if err != nil {
+		pdb.log.Error("Unable to get rate", "currency", currency, "error", err)
+		return nil, err
+	}
+
+	for _, p := range prods {
+		np := p
+		np.Price = np.Price * rate
+		prods = append(prods, np)
+
+	}
+
 	return &prods, nil
 }
 
 // GetProductByID returns product by id
-func (pdb *ProductsDB) GetProductByID(id int) (*Product, error) {
+func (pdb *ProductsDB) GetProductByID(id int, currency string) (*Product, error) {
 	isIDExist := pdb.findIndexByProductID(id)
 	prod := &Product{}
 
@@ -85,7 +98,20 @@ func (pdb *ProductsDB) GetProductByID(id int) (*Product, error) {
 
 	log.Println("You fetched a thing")
 
-	return prod, nil
+	if currency == "" {
+		return prod, nil
+	}
+
+	rate, err := pdb.getRate(currency)
+	if err != nil {
+		pdb.log.Error("Unable to get rate", "currency", currency, "error", err)
+		return nil, err
+	}
+
+	np := *prod
+	np.Price = np.Price * rate
+
+	return &np, nil
 }
 
 // UpdateProduct is a method to update record at database
@@ -162,4 +188,15 @@ func (pdb *ProductsDB) findIndexByProductID(id int) int {
 	log.Printf("Found the ID %d", id)
 
 	return prod.ID
+}
+
+func (pdb *ProductsDB) getRate(destination string) (float64, error) {
+	rr := &protos.RateRequest{
+		Base:        protos.Currencies(protos.Currencies_value["EUR"]),
+		Destination: protos.Currencies(protos.Currencies_value[destination]),
+	}
+
+	resp, err := pdb.currency.GetRate(context.Background(), rr)
+
+	return resp.Rate, err
 }

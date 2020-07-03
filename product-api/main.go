@@ -25,7 +25,7 @@ func main() {
 	database, err := db.CreateDatabase()
 
 	if err != nil {
-		l.Error("Database connection failed: %s", err.Error())
+		l.Error("Database connection failed: %s", "error", err.Error())
 	}
 
 	conn, err := grpc.Dial("localhost:9092", grpc.WithInsecure())
@@ -49,7 +49,10 @@ func main() {
 
 	// handlers for API
 	getR := sm.Methods(http.MethodGet).Subrouter()
+	getR.HandleFunc("/product/{id:[0-9]+}", ph.ListSingle).Queries("currency", "[A-Z]{3}")
 	getR.HandleFunc("/product/{id:[0-9]+}", ph.ListSingle)
+
+	getR.HandleFunc("/product", ph.ListAll).Queries("currency", "[A-Z]{3}")
 	getR.HandleFunc("/product", ph.ListAll)
 
 	postR := sm.Methods(http.MethodPost).Subrouter()
@@ -78,7 +81,7 @@ func main() {
 		l.Info("Starting server on port 9090")
 		err := s.ListenAndServe()
 		if err != nil {
-			l.Error("Error starting server: %s\n", err)
+			l.Error("Error starting server: %s\n", "error ", err)
 			os.Exit(1)
 		}
 	}()
