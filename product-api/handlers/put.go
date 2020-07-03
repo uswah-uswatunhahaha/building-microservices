@@ -7,6 +7,14 @@ import (
 	"github.com/uswah-uswatunhahaha/building-microservices/product-api/data"
 )
 
+// swagger:route PUT /products products updateProduct
+// Update a products details
+//
+// responses:
+//	201: noContentResponse
+//  404: errorResponse
+//  422: errorValidation
+
 // Edit handles PUT request
 func (p *Products) Edit(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Add("Content-Type", "application/json")

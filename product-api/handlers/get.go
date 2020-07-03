@@ -6,6 +6,12 @@ import (
 	"github.com/uswah-uswatunhahaha/building-microservices/product-api/data"
 )
 
+// swagger:route GET /products/{id} products listSingle
+// Return a list of products from the database
+// responses:
+//	200: productResponse
+//	404: errorResponse
+
 // ListSingle is a handler to get product by id
 func (p *Products) ListSingle(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Add("Content-Type", "application/json")
@@ -39,6 +45,11 @@ func (p *Products) ListSingle(rw http.ResponseWriter, r *http.Request) {
 		p.l.Error("[ERROR] serializing product", "error", err)
 	}
 }
+
+// swagger:route GET /products products listProducts
+// Return a list of products from the database
+// responses:
+//	200: productsResponse
 
 // ListAll handles GET requests and returns all current products
 func (p *Products) ListAll(rw http.ResponseWriter, r *http.Request) {

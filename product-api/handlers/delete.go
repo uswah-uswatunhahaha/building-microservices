@@ -8,6 +8,14 @@ import (
 	"github.com/uswah-uswatunhahaha/building-microservices/product-api/data"
 )
 
+// swagger:route DELETE /products/{id} products deleteProduct
+// Update a products details
+//
+// responses:
+//	201: noContentResponse
+//  404: errorResponse
+//  501: errorResponse
+
 // Delete handles DELETE request
 func (p *Products) Delete(rw http.ResponseWriter, r *http.Request) {
 	rw.Header().Add("Content-Type", "application/json")
