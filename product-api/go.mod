@@ -9,7 +9,7 @@ require (
 	github.com/gorilla/mux v1.7.4
 	github.com/hashicorp/go-hclog v0.14.1
 	github.com/leodido/go-urn v1.2.0 // indirect
-	github.com/uswah-uswatunhahaha/building-microservices/currency v0.0.0-20200701143828-ef8e8ffaec50
+	github.com/uswah-uswatunhahaha/building-microservices/currency v0.0.0-20200703055332-16eb5b237835
 	google.golang.org/grpc v1.29.1
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )

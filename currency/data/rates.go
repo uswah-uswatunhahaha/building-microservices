@@ -35,7 +35,7 @@ func (e *ExchangeRates) GetRate(base, dest string) (float64, error) {
 	if !ok {
 		return 0, fmt.Errorf("Rate not found for currency %s", dest)
 	}
-	return br / dr, nil
+	return dr / br, nil
 }
 
 func (e *ExchangeRates) getRates() error {
