@@ -6,11 +6,12 @@ import (
 	"github.com/uswah-uswatunhahaha/building-microservices/product-api/data"
 )
 
-// swagger:route GET /products/{id} products listSingle
-// Return a list of products from the database
+// swagger:route GET /product/{id} product getSingleProduct
+// Get a product by id
+//
 // responses:
 //	200: productResponse
-//	404: errorResponse
+//  404: errorResponse
 
 // ListSingle is a handler to get product by id
 func (p *Products) ListSingle(rw http.ResponseWriter, r *http.Request) {
@@ -46,10 +47,12 @@ func (p *Products) ListSingle(rw http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// swagger:route GET /products products listProducts
-// Return a list of products from the database
+// swagger:route GET /product product getAllProducts
+// Get all products
+//
 // responses:
-//	200: productsResponse
+//	200: productResponse
+//  404: errorResponse
 
 // ListAll handles GET requests and returns all current products
 func (p *Products) ListAll(rw http.ResponseWriter, r *http.Request) {

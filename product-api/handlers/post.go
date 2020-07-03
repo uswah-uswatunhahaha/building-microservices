@@ -7,7 +7,7 @@ import (
 	"github.com/uswah-uswatunhahaha/building-microservices/product-api/data"
 )
 
-// swagger:route POST /products products createProduct
+// swagger:route POST /product product createProduct
 // Create a new product
 //
 // responses:

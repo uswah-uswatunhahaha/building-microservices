@@ -8,12 +8,11 @@ import (
 	"github.com/uswah-uswatunhahaha/building-microservices/product-api/data"
 )
 
-// swagger:route DELETE /products/{id} products deleteProduct
-// Update a products details
+// swagger:route DELETE /product/{id} product deleteProduct
+// Delete a product by id
 //
 // responses:
-//	201: noContentResponse
-//  404: errorResponse
+//	200: productResponse
 //  501: errorResponse
 
 // Delete handles DELETE request
