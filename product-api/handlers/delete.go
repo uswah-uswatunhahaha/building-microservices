@@ -9,10 +9,11 @@ import (
 )
 
 // swagger:route DELETE /product/{id} product deleteProduct
-// Delete a product by id
+// Update a products details
 //
 // responses:
-//	200: productResponse
+//	201: noContentResponse
+//  404: errorResponse
 //  501: errorResponse
 
 // Delete handles DELETE request
