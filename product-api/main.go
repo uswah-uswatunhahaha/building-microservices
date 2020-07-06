@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/go-openapi/runtime/middleware"
+
+	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/hashicorp/go-hclog"
 	"github.com/uswah-uswatunhahaha/building-microservices/product-api/data"
@@ -74,10 +76,13 @@ func main() {
 	getR.Handle("/docs", sh)
 	getR.Handle("/swagger.yaml", http.FileServer(http.Dir("./")))
 
+	// CORS
+	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"*"}))
+
 	// create a new server
 	s := &http.Server{
 		Addr:         ":9090",                                          // configure the address
-		Handler:      sm,                                               //set the default handler
+		Handler:      ch(sm),                                           //set the default handler
 		ErrorLog:     l.StandardLogger(&hclog.StandardLoggerOptions{}), // set the logger for the server
 		ReadTimeout:  5 * time.Second,                                  // max time to read request from the client
 		WriteTimeout: 10 * time.Second,                                 //max time ro write response to the client
